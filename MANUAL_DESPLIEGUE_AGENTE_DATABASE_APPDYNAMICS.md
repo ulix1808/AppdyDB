@@ -277,20 +277,143 @@ Para **aumentar memoria JVM** (varias bases de datos), usar por ejemplo `-Xms153
 
 ---
 
-## 10. Agregar colectores (bases de datos a monitorear)
+## 10. Database Visibility Supported Environments (bases de datos soportadas)
 
-- En la UI del Controller: **Configuration** → **Collectors** → **Add** (+).
-- Completar los datos del colector (tipo de BD, host, puerto, usuario, contraseña, etc.). La contraseña se almacena cifrada; no puede recuperarse después.
-- Para **sub-colectores** (solo tipos relacionales): en el cuadro de creación del colector, opción Advanced → Add sub-collector (host y puerto).
-- Permisos necesarios en AppDynamics: Can Create Collectors, Can Edit All Collectors (y si aplica Can Delete All Collectors). En la base de datos, el usuario debe tener los permisos indicados en [Database Visibility Supported Environments](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/database-visibility-supported-environments).
+Esta sección resume los entornos y versiones soportados por el Database Visibility Agent según la documentación 24.x. Para permisos concretos por base de datos, ver [Database Visibility Supported Environments](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/database-visibility-supported-environments).
 
-Bases de datos soportadas (resumen): Oracle, Oracle RAC, Microsoft SQL Server, MySQL (incl. Percona, MariaDB, Aurora), PostgreSQL (incl. Azure, Aurora), SAP HANA, Sybase ASE, Sybase IQ, IBM DB2 LUW, MongoDB, Cassandra/DSE, Couchbase, Microsoft Azure SQL, etc. Consultar la documentación de entornos soportados para versiones exactas.
+### 10.1 Tabla de bases de datos y versiones
+
+| Base de datos | Soporte Amazon RDS | Versiones |
+|---------------|--------------------|-----------|
+| **Oracle, Oracle RAC** | Sí | 10g (≥ 10.2), 11g, 12c, 18c, 19c |
+| **Microsoft SQL Server** | Sí | 2005, 2008, 2012, 2014, 2016, 2017, 2019, 2022, SQL Azure |
+| **Microsoft SQL Server on Linux** | — | Preview; no recomendado para producción |
+| **MySQL** | Sí | Todas, incl. 8.0, Percona, MariaDB, Aurora |
+| **PostgreSQL** | Sí | Todas, incl. Azure Database for PostgreSQL, Aurora |
+| **SAP HANA** | — | ≥ 2.0 SPS 05, ≥ QRC 3/2023 |
+| **Sybase ASE** | — | ≥ 15 |
+| **Sybase IQ** | — | Todas las versiones |
+| **IBM DB2 LUW** | — | 9.x, 10.x, 11.x |
+| **MongoDB, MongoDB cluster** | Sí | ≥ 2.6 |
+| **Apache Cassandra** | — | ≥ 3.11.4 |
+| **Datastax Enterprise (DSE) Cassandra** | — | 5.1, ≥ 6.7.3 |
+| **Couchbase** | — | ≥ 4.5 |
+
+**Nota:** Para monitoreo de hardware en MySQL y PostgreSQL en RDS, el vCPU se obtiene según [Amazon RDS Instance Types](https://aws.amazon.com/rds/instance-types/) (modelo vs vCPU) para el modelo de licencia IBL.
+
+### 10.2 Sistemas operativos soportados
+
+- **Windows:** 64 bits (desde 20.5, 32 bits no soportado).
+- **Linux:** 32 y 64 bits (recomendado 64 bits con JRE 64 bits).
+- **Solaris:** todas las versiones.
+- **AIX:** ≥ 6.1.
+- **Amazon RDS:** todas las versiones.
+
+Se recomienda usar JRE 64 bits en SO 64 bits para evitar errores en métricas.
 
 ---
 
-## 11. Referencias a documentación original (24.x)
+## 11. Agregar y configurar colectores (Add Database Collectors)
 
-Estos enlaces corresponden a la documentación que puede ser retirada; se incluyen para trazabilidad y consulta histórica:
+Para que el Database Agent recoja datos, debe añadirse y configurarse un **Database Collector** por cada base de datos a monitorear. El colector es el proceso dentro del agente que recopila métricas de instancias y servidores de base de datos.
+
+**Documentación original (puede ser retirada):** [Add Database Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors).
+
+### 11.1 Permisos necesarios
+
+- **En la base de datos:** los permisos requeridos dependen del tipo de BD; ver [Database Visibility Supported Environments](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/database-visibility-supported-environments).
+- **En Splunk AppDynamics:** el rol del usuario debe tener:
+  - Can Create Collectors
+  - Can Edit All Collectors
+  - Can Delete All Collectors  
+  Ver [Database Permissions](https://docs.appdynamics.com/accounts/en/splunk-appdynamics-saas-user-management/manage-custom-roles-for-splunk-appdynamics/database-permissions).
+
+### 11.2 Cómo agregar un colector
+
+1. En la UI del Controller: **Configuration** → **Collectors** → **Add** (+).
+2. Completar cada campo del cuadro **Create New Collector** (tipo de BD, agente, nombre del colector, host, puerto, usuario, contraseña, etc.).
+3. Si se desea monitorear un **sub-colector** (solo bases relacionales): **Advanced** >> **+Add sub-collector** e indicar host y puerto.
+4. Pulsar **OK**.
+
+**Importante:** Al crear el colector, la contraseña se cifra y se guarda; una vez guardada **no puede recuperarse**. Splunk AppDynamics usa la biblioteca interna `secure-credential-store-api` y el algoritmo PKCS5 para el cifrado.
+
+Después de añadir el colector se puede ajustar su configuración y, si aplica, [vincular una base de datos en los mapas de flujo de aplicación](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers/access-database-visibility-from-application-monitoring-views) a una instancia monitoreada por Database Visibility.
+
+- **Monitoreo de hardware:** [Configure the Database Agent to Monitor Server Hardware](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-the-database-agent-to-monitor-server-hardware).
+- **Uso e interpretación:** [Monitor Databases and Database Servers](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers).
+
+### 11.3 Verificación del colector
+
+Cuando el colector esté en ejecución, en poco tiempo podrás ver datos de actividad histórica. El cuadro de configuración del colector mostrará un icono de colector; desde el menú **Databases** se ve la vista general de todos los colectores. Puede tardar unos minutos en reportar métricas.
+
+### 11.4 Editar, eliminar y exportar
+
+- **Editar:** desde el panel Collectors se pueden editar todos los detalles del colector **excepto** el tipo de plataforma de base de datos. Para los campos específicos de cada BD, ver las páginas de configuración por base de datos (enlaces en la sección 12).
+- **Eliminar:** desde el panel Collectors se puede eliminar un colector.
+- **Exportar:** **Actions** > **Export Data** genera un CSV con: Collector name, Host name, Port number, Username, Database type, Agent name.
+
+### 11.5 Logs y diagnóstico del agente
+
+- **Agent Dashboard:** clic en el nombre del agente bajo **Agent Name** en la página Collectors.
+- Desde ahí se pueden solicitar logs (**Request Agent Log files**) o thread dumps (**Request Agent Thread Dumps**). Ver [Agent Log Files](https://docs.appdynamics.com/appd/24.x/latest/en/application-monitoring/administer-app-server-agents/agent-log-files) y [Request Agent Log Files](https://docs.appdynamics.com/appd/24.x/latest/en/application-monitoring/administer-app-server-agents/request-agent-log-files).
+
+### 11.6 Resolución de problemas
+
+Los colectores mal configurados o que no pueden conectar a la base de datos muestran un error en la página **Databases** y en los dashboards individuales; al pasar el ratón sobre el icono de error se muestra el motivo. Si el colector no reporta métricas tras unos minutos y la base de datos está activa, revisar el panel **Events**. Los [Agent Diagnostic Events](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers/database-agent-events-reference) pueden indicar contraseña incorrecta o errores de comunicación. Comprobar la configuración del colector y que el Database Agent tenga conectividad y permisos según [Database Monitoring Requirements and Supported Environments](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/database-visibility-supported-environments).
+
+---
+
+## 12. Configuración de colectores por base de datos
+
+Para cada tipo de base de datos existen campos y opciones específicos. A continuación se listan los enlaces a la documentación de configuración de cada colector (documentación 24.x que puede ser retirada). **Oracle** se detalla un poco más abajo por ser uno de los más usados.
+
+### 12.1 Enlaces a “Configure … Collectors”
+
+| Base de datos | URL (24.x) |
+|---------------|------------|
+| **Oracle** | [Configure Oracle Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-oracle-collectors) |
+| **Cassandra** | [Configure Cassandra Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-cassandra-collectors) |
+| **Couchbase** | [Configure Couchbase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-couchbase-collectors) |
+| **IBM DB2** | [Configure IBM DB2 Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-ibm-db2-collectors) |
+| **Microsoft SQL Server** | [Configure Microsoft SQL Server Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-sql-server-collectors) |
+| **Microsoft Azure** | [Configure Microsoft Azure Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-azure-collectors) |
+| **MongoDB** | [Configure MongoDB Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mongodb-collectors) |
+| **MySQL** | [Configure MySQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mysql-collectors) |
+| **PostgreSQL** | [Configure PostgreSQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-postgresql-collectors) |
+| **SAP HANA** | [Configure SAP HANA Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sap-hana-collectors) |
+| **Sybase ASE** | [Configure Sybase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-collectors) |
+| **Sybase IQ** | [Configure Sybase IQ Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-iq-collectors) |
+
+### 12.2 Oracle: resumen de configuración
+
+- **Versiones:** Oracle 10g o superior. Para **Oracle RAC** basta con configurar **un** colector para todo el clúster; se elige cualquier nodo para conectar y el clúster se detecta automáticamente.
+- **Oracle 12c PDB:** la consulta de métricas de sistema está disponible desde Oracle Database 12c Release 2 (12.2.0.1).
+- **Connection Details:**
+  - **SID o Service Name** de la instancia a monitorear.
+  - **CDB:** indicar el service name del CDB. **PDB:** indicar el service name del PDB; el service name debe existir en todos los nodos que tengan el PDB.
+  - **Custom JDBC Connection String** (opcional). Para Kerberos, usar la opción LDAP/Kerberos en Advanced Options.
+- **Sub-colectores:** hasta 29 sub-colectores (30 bases en un clúster personalizado). Parámetros distintos por sub-colector solo vía [Create Collector API](https://docs.appdynamics.com/appd/24.x/latest/en/extend-splunk-appdynamics/splunk-appdynamics-apis/database-visibility-api). No se puede convertir un clúster personalizado en colector standalone.
+- **Usuario/contraseña:** el usuario debe tener los permisos indicados en “User Permissions for Oracle” (ver más abajo). Opción **CyberArk** para obtener credenciales.
+- **Opciones avanzadas:** Exclude Schemas, SSL Connection (Truststore/Keystore), LDAP/Kerberos, Monitor Operating System (hardware).
+
+**Permisos de usuario para Oracle (10g y posteriores):**
+
+- SELECT_CATALOG_ROLE  
+- CREATE SESSION  
+
+Para Oracle 12c+ con Multitenant (CDB/PDB), los mismos roles aplican en el contexto correspondiente. Consultar la documentación para el SQL exacto de creación de usuario.
+
+**Explain plans:** Para generar planes de ejecución desde la ventana de drill-down SQL hace falta una **plan table** en el esquema del usuario de monitoreo, con privilegios INSERT y SELECT. El usuario también necesita privilegios de acceso sobre las tablas/vistas de la consulta que se explica.
+
+**Kerberos:** [Monitor Oracle Databases Using Kerberos Authentication](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-oracle-collectors/monitor-oracle-databases-using-kerberos-authentication).
+
+---
+
+## 13. Referencias a documentación original (24.x)
+
+Estos enlaces corresponden a la documentación que puede ser retirada; se incluyen para trazabilidad y consulta histórica.
+
+### 13.1 Database Visibility y agente
 
 - [Database Visibility (índice)](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/)
 - [Configure the Agent Settings for Monitoring Database](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/configure-the-agent-settings-for-monitoring-database)
@@ -302,6 +425,33 @@ Estos enlaces corresponden a la documentación que puede ser retirada; se incluy
 - [Database Visibility Supported Environments](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/database-visibility-supported-environments)
 - [Add Database Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors)
 - [Upgrade the Database Agent](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/administer-the-database-agent/upgrade-the-database-agent)
+
+### 13.2 Colectores por base de datos (Configure … Collectors)
+
+- [Configure Cassandra Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-cassandra-collectors)
+- [Configure Couchbase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-couchbase-collectors)
+- [Configure IBM DB2 Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-ibm-db2-collectors)
+- [Configure Microsoft SQL Server Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-sql-server-collectors)
+- [Configure Microsoft Azure Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-azure-collectors)
+- [Configure MongoDB Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mongodb-collectors)
+- [Configure MySQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mysql-collectors)
+- [Configure Oracle Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-oracle-collectors)
+- [Configure PostgreSQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-postgresql-collectors)
+- [Configure SAP HANA Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sap-hana-collectors)
+- [Configure Sybase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-collectors)
+- [Configure Sybase IQ Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-iq-collectors)
+
+### 13.3 Otros enlaces útiles
+
+- [Configure the Database Agent to Monitor Server Hardware](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-the-database-agent-to-monitor-server-hardware)
+- [Monitor Oracle Databases Using Kerberos Authentication](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-oracle-collectors/monitor-oracle-databases-using-kerberos-authentication)
+- [Access Database Visibility from Application Monitoring Views](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers/access-database-visibility-from-application-monitoring-views)
+- [Monitor Databases and Database Servers](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers)
+- [Database Agent Events Reference](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/monitor-databases-and-database-servers/database-agent-events-reference)
+- [Database Permissions (roles)](https://docs.appdynamics.com/accounts/en/splunk-appdynamics-saas-user-management/manage-custom-roles-for-splunk-appdynamics/database-permissions)
+- [Database Visibility API / Create Collector API](https://docs.appdynamics.com/appd/24.x/latest/en/extend-splunk-appdynamics/splunk-appdynamics-apis/database-visibility-api)
+- [Agent Log Files](https://docs.appdynamics.com/appd/24.x/latest/en/application-monitoring/administer-app-server-agents/agent-log-files)
+- [Request Agent Log Files](https://docs.appdynamics.com/appd/24.x/latest/en/application-monitoring/administer-app-server-agents/request-agent-log-files)
 - [End of Support Notice: Disabling TLS 1.0 and 1.1](https://docs.appdynamics.com/paa/appdynamics-end-of-support-notices/end-of-support-notice-disabling-tls-1-0-and-1-1)
 
 ---
