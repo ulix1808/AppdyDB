@@ -365,24 +365,28 @@ Los colectores mal configurados o que no pueden conectar a la base de datos mues
 
 ## 12. Configuración de colectores por base de datos
 
-Para cada tipo de base de datos existen campos y opciones específicos. A continuación se listan los enlaces a la documentación de configuración de cada colector (documentación 24.x que puede ser retirada). **Oracle** se detalla un poco más abajo por ser uno de los más usados.
+Para cada tipo de base de datos existen campos y opciones específicos. La documentación de configuración de cada colector está guardada **en este repositorio** (descargada de la documentación 24.x que puede ser retirada). **Oracle** se detalla un poco más abajo por ser uno de los más usados.
 
-### 12.1 Enlaces a “Configure … Collectors”
+**Índice de todos los colectores (local):** [docs/collectors/README.md](docs/collectors/README.md)
 
-| Base de datos | URL (24.x) |
-|---------------|------------|
-| **Oracle** | [Configure Oracle Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-oracle-collectors) |
-| **Cassandra** | [Configure Cassandra Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-cassandra-collectors) |
-| **Couchbase** | [Configure Couchbase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-couchbase-collectors) |
-| **IBM DB2** | [Configure IBM DB2 Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-ibm-db2-collectors) |
-| **Microsoft SQL Server** | [Configure Microsoft SQL Server Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-sql-server-collectors) |
-| **Microsoft Azure** | [Configure Microsoft Azure Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-microsoft-azure-collectors) |
-| **MongoDB** | [Configure MongoDB Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mongodb-collectors) |
-| **MySQL** | [Configure MySQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-mysql-collectors) |
-| **PostgreSQL** | [Configure PostgreSQL Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-postgresql-collectors) |
-| **SAP HANA** | [Configure SAP HANA Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sap-hana-collectors) |
-| **Sybase ASE** | [Configure Sybase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-collectors) |
-| **Sybase IQ** | [Configure Sybase IQ Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-sybase-iq-collectors) |
+### 12.1 Documentación local “Configure … Collectors”
+
+| Base de datos | Documento local (en el repo) |
+|---------------|------------------------------|
+| **Oracle** | [Configure Oracle Collectors](docs/collectors/configure-oracle-collectors.md) |
+| **Cassandra** | [Configure Cassandra Collectors](docs/collectors/configure-cassandra-collectors.md) |
+| **Couchbase** | [Configure Couchbase Collectors](docs/collectors/configure-couchbase-collectors.md) |
+| **IBM DB2** | [Configure IBM DB2 Collectors](docs/collectors/configure-ibm-db2-collectors.md) |
+| **Microsoft SQL Server** | [Configure Microsoft SQL Server Collectors](docs/collectors/configure-microsoft-sql-server-collectors.md) |
+| **Microsoft Azure** | [Configure Microsoft Azure Collectors](docs/collectors/configure-microsoft-azure-collectors.md) |
+| **MongoDB** | [Configure MongoDB Collectors](docs/collectors/configure-mongodb-collectors.md) |
+| **MySQL** | [Configure MySQL Collectors](docs/collectors/configure-mysql-collectors.md) |
+| **PostgreSQL** | [Configure PostgreSQL Collectors](docs/collectors/configure-postgresql-collectors.md) |
+| **SAP HANA** | [Configure SAP HANA Collectors](docs/collectors/configure-sap-hana-collectors.md) |
+| **Sybase ASE** | [Configure Sybase Collectors](docs/collectors/configure-sybase-collectors.md) |
+| **Sybase IQ** | [Configure Sybase IQ Collectors](docs/collectors/configure-sybase-iq-collectors.md) |
+
+Cada archivo incluye al inicio la URL original (24.x) por si la documentación en línea es retirada.
 
 ### 12.2 Oracle: resumen de configuración
 
@@ -428,6 +432,9 @@ Estos enlaces corresponden a la documentación que puede ser retirada; se incluy
 
 ### 13.2 Colectores por base de datos (Configure … Collectors)
 
+**Documentación local en el repo:** [docs/collectors/README.md](docs/collectors/README.md) — cada “Configure … Collectors” está guardado en `docs/collectors/configure-*-collectors.md`.
+
+Enlaces externos (24.x, pueden ser retirados):
 - [Configure Cassandra Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-cassandra-collectors)
 - [Configure Couchbase Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-couchbase-collectors)
 - [Configure IBM DB2 Collectors](https://docs.appdynamics.com/appd/24.x/latest/en/database-visibility/add-database-collectors/configure-ibm-db2-collectors)
